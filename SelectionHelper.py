@@ -4,6 +4,7 @@ from math import sqrt,cos,acos,pi,exp,sin,atan2,log
 import pandas as pd
 import pickle
 from xgboost import XGBClassifier
+from sklearn import preprocessing
 
 from SelectionDefs import NewAng, VtxInSimpleFid, VtxInFid, GetPhiT, pTrans,pTransRat
 from SelectionDefs import alphaT, ECCQE, ECal, Q2, OpenAngle, PhiDiff, edgeCut
@@ -301,11 +302,7 @@ class BDTensemble:
 
         for r in [1,2,3]:
           for b in BDTnumlist:
-              try:
-                  print(bdtsavedir+'BDTweights_R%i_%i.pickle'%(r,b),'rb')
-                  self.bdt[r][b] = pickle.load(open(bdtsavedir+'BDTweights_R%i_%i.pickle'%(r,b),'rb'))
-              except:
-                  pass
+              self.bdt[r][b] = pickle.load(open(bdtsavedir+'BDTweights_R%i_%i.pickle'%(r,b),'rb')
               self.valweight[r][b] = {}
               self.trainrse[r][b] = {}
               self.valrse[r][b] = {}
@@ -338,6 +335,7 @@ class BDTensemble:
         if filetag=='data': filetag='moot'
         if filetag=='fullosc': filetag='moot'
         training_varbs = tvdf.values
+        print(len(training_varbs))
         rse = dpfdf[['run','subrun','event']].values
         print("length test",len(rse))
         dpfdf['nBDTs'] = int(self.nBDTs)*np.ones(len(rse))
